@@ -1,10 +1,10 @@
 {
-  "name": "@cbuschka/slix",
+  "name": "@cbuschka/flux",
   "version": "1.0.0",
   "description": "Simple, promisified, event emitter based, flux dispatcher.",
   "author": "cbuschka@gmail.com",
-  "homepage": "https://github.com/cbuschka/slix",
-  "repository": "cbuschka/slix",
+  "homepage": "https://github.com/cbuschka/flux",
+  "repository": "cbuschka/flux",
   "main": "dist/legacy/index.js",
   "module": "src/index.js",
   "scripts": {

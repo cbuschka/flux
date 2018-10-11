@@ -1,4 +1,4 @@
-# @cbuschka/slix
+# @cbuschka/flux
 
 ### Simple, oo style, event emitter based, flux dispatcher.
 
@@ -11,7 +11,7 @@ yarn install && yarn run build
 ## Installation
 
 ``` bash
-yarn install @cbuschka/slix
+yarn install @cbuschka/flux
 ```
 
 ## License
