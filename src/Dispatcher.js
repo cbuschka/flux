@@ -11,7 +11,7 @@ function handlerNameFor(eventType) {
 // a small dispatcher that delegates actions to handlers/stores;
 // for action Abc implement handleAbc(action) in handler/store class
 // after dispatching, the dispatcher aggregates view data via calls to appendDataTo(date)
-class Dispatcher {
+export class Dispatcher {
   constructor() {
     this.count = 0;
     this.handlers = [];
