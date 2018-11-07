@@ -10,7 +10,8 @@
   "scripts": {
     "clean": "rimraf dist && mkdirp dist/legacy",
     "build:legacy": "BABEL_ENV=legacy babel src --source-maps --no-comments --out-dir dist/legacy/",
-    "build": "npm run clean && run-p build:**"
+    "build": "npm run clean && run-p build:**",
+    "release": "npm run build && npm publish --access public"
   },
   "keywords": [
     "simple",
