@@ -1,26 +1,54 @@
 import {EventEmitter} from 'events';
 
-function copyObject(o) {
-  return JSON.parse(JSON.stringify(o));
-}
-
 function upperFirst(s) {
   return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function handlerNameFor(eventType) {
+  return 'on' + upperFirst(eventType);
 }
 
 // a small dispatcher that delegates actions to handlers/stores;
 // for action Abc implement handleAbc(action) in handler/store class
 // after dispatching, the dispatcher aggregates view data via calls to appendDataTo(date)
-export class Dispatcher {
+class Dispatcher {
   constructor() {
     this.count = 0;
     this.handlers = [];
+    this.handlerCache = {};
     this.eventEmitter = new EventEmitter();
   }
 
   addHandler(...handlers) {
+    let handlerAdded = false;
     for (let i = 0; i < handlers.length; ++i) {
-      this.handlers.push(handlers[i]);
+      const handler = handlers[i];
+      const handlerIndex = this.handlers.indexOf(handler);
+      if (handlerIndex !== -1) {
+        continue;
+      }
+      this.handlers.push(handler);
+      handlerAdded = true;
+    }
+
+    if (handlerAdded) {
+      this.handlerCache = {};
+    }
+  }
+
+  removeHandler(...handlers) {
+    let handlerRemoved = false;
+    for (let i = 0; i < handlers.length; ++i) {
+      const handler = handlers[i];
+      const handlerIndex = this.handlers.indexOf(handler);
+      if (handlerIndex !== -1) {
+        this.handlers.splice(handlerIndex, 1);
+        handlerRemoved = true;
+      }
+    }
+
+    if (handlerRemoved) {
+      this.handlerCache = {};
     }
   }
 
@@ -59,16 +87,34 @@ export class Dispatcher {
 
   _dispatchAction(action) {
     if (__DEV__) {
-      console.debug('%o Dispatching action result=%o to %d handler(s)...', this.count, action, this.handlers.length);
+      if (!action['type']) {
+        console.error('Action without type: %o', action);
+        return;
+      }
     }
 
-    const handlerName = 'on' + upperFirst(action.type);
-    this.handlers.forEach(function (handler) {
-      const handlerFunc = handler[handlerName];
-      if (handlerFunc) {
-        handlerFunc.call(handler, action);
-      }
-    });
+    const handlerName = handlerNameFor(action.type);
+    const handlers = this._getHandlersHandling(handlerName);
+    if (__DEV__) {
+      console.debug('%o Dispatching action result=%o to %d handler(s)...', this.count, action, handlers.length);
+    }
+    handlers.forEach((handler) => handler(action));
+  }
+
+  _getHandlersHandling(handlerName) {
+    if (!this.handlerCache[handlerName]) {
+      const handlers = this.handlers
+        .map((handler) => {
+          const handlerFunc = handler[handlerName];
+          if (handlerFunc) {
+            return handlerFunc.bind(handler);
+          }
+        })
+        .filter((handler) => !!handler);
+      this.handlerCache[handlerName] = {handlers};
+    }
+
+    return this.handlerCache[handlerName].handlers;
   }
 
   subscribe(l) {
@@ -83,39 +129,27 @@ export class Dispatcher {
   }
 
   _fireChanged() {
-    const data = copyObject(this._collectData());
+    const data = this._collectData();
     if (__DEV__) {
-      console.debug('Updating view data=%o...', data);
+      console.debug('Updating view data=%o to %o listeners...', data, this.eventEmitter.listenerCount('changed'));
     }
     this.eventEmitter.emit('changed', {type: 'change', data});
   }
 
   _loadData() {
-    this.handlers.forEach(function (handler) {
-      const func = handler['loadData'];
-      if (func) {
-        func.call(handler);
-      }
-    });
+    const handlers = this._getHandlersHandling('loadData');
+    handlers.forEach((handler) => handler());
   }
 
   _storeData() {
-    this.handlers.forEach(function (handler) {
-      const func = handler['storeData'];
-      if (func) {
-        func.call(handler);
-      }
-    });
+    const handlers = this._getHandlersHandling('storeData');
+    handlers.forEach((handler) => handler());
   }
 
   _collectData() {
     const data = {};
-    this.handlers.forEach(function (handler) {
-      const appendDataToFunc = handler['appendDataTo'];
-      if (appendDataToFunc) {
-        appendDataToFunc.call(handler, data);
-      }
-    });
+    const handlers = this._getHandlersHandling('appendDataTo');
+    handlers.forEach((handler) => handler(data));
     return data;
   }
 }
