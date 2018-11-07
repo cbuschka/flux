@@ -1,6 +1,6 @@
 {
   "name": "@cbuschka/flux",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Simple, promisified, event emitter based, flux dispatcher.",
   "author": "cbuschka@gmail.com",
   "homepage": "https://github.com/cbuschka/flux",
