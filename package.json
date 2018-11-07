@@ -32,6 +32,8 @@
     "rimraf": "^2.6.2"
   },
   "dependencies": {
+  },
+  "peerDdependencies": {
     "babel-runtime": "^6.26.0"
   }
 }
