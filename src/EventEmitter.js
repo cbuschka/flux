@@ -34,6 +34,11 @@ export class EventEmitter {
         listeners.splice(listenerIndex, 1);
     }
 
+    listenerCount(event) {
+        const listeners = this.listeners[event];
+        return !listeners ? 0 : listeners.length;
+    }
+
     emit(event, data) {
         const listeners = this.listeners[event];
         if (!listeners) {
