@@ -32,7 +32,6 @@
     "rimraf": "^2.6.2"
   },
   "dependencies": {
-    "babel-runtime": "^6.26.0",
-    "events": "^3.0.0"
+    "babel-runtime": "^6.26.0"
   }
 }
