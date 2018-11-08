@@ -3,7 +3,7 @@
     "legacy": {
       "presets": [
         [
-          "env",
+          "@babel/preset-env",
           {
             "targets": {
               "node": 8,
@@ -11,20 +11,15 @@
             },
             "spec": true,
             "modules": "commonjs",
-            "include": [
-              "transform-es2015-classes"
-            ],
             "useBuiltIns": "usage"
           }
         ]
       ],
       "plugins": [
         [
-          "transform-runtime", {
+          "@babel/plugin-transform-runtime", {
             "helpers": true,
-            "polyfill": false,
-            "regenerator": true,
-            "moduleName": "babel-runtime"
+            "regenerator": true
           }
         ]
       ]
