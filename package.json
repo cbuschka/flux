@@ -33,7 +33,7 @@
   },
   "dependencies": {
   },
-  "peerDdependencies": {
-    "babel-runtime": "^6.26.0"
+  "peerDependencies": {
+    "@babel/runtime": "^7.0.0"
   }
 }
