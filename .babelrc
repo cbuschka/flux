@@ -1,0 +1,33 @@
+{
+  "env": {
+    "legacy": {
+      "presets": [
+        [
+          "env",
+          {
+            "targets": {
+              "node": 8,
+              "browsers": ["ie >= 11"]
+            },
+            "spec": true,
+            "modules": "commonjs",
+            "include": [
+              "transform-es2015-classes"
+            ],
+            "useBuiltIns": "usage"
+          }
+        ]
+      ],
+      "plugins": [
+        [
+          "transform-runtime", {
+            "helpers": true,
+            "polyfill": false,
+            "regenerator": true,
+            "moduleName": "babel-runtime"
+          }
+        ]
+      ]
+    }
+  }
+}
