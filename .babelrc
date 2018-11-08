@@ -6,8 +6,7 @@
           "@babel/preset-env",
           {
             "targets": {
-              "node": 8,
-              "browsers": ["ie >= 11"]
+              "browsers": ["> 1%", "since 2015", "ie >= 11"]
             },
             "spec": true,
             "modules": "commonjs",
@@ -15,14 +14,7 @@
           }
         ]
       ],
-      "plugins": [
-        [
-          "@babel/plugin-transform-runtime", {
-            "helpers": true,
-            "regenerator": true
-          }
-        ]
-      ]
+      "plugins": [ "@babel/plugin-transform-runtime" ]
     }
   }
 }
