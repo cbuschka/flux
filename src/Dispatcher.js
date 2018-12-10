@@ -142,12 +142,16 @@ export class Dispatcher {
 
     _preDispatch() {
         const handlers = this._getHandlersHandling('preDispatch');
-        handlers.forEach((handler) => handler());
+        for(let i=0; i<handlers.length; ++i) {
+            handlers[i]();
+        }
     }
 
     _postDispatch() {
         const handlers = this._getHandlersHandling('postDispatch');
-        handlers.forEach((handler) => handler());
+        for(let i=0; i<handlers.length; ++i) {
+            handlers[i]();
+        }
     }
 
     save() {
@@ -156,13 +160,17 @@ export class Dispatcher {
 
     load(data) {
         const handlers = this._getHandlersHandling("load");
-        handlers.forEach((handler) => handler(data));
+        for (let i = 0; i < handlers.length; ++i) {
+            handlers[i](data);
+        }
     }
 
     _collectData(methodName) {
         const data = {};
         const handlers = this._getHandlersHandling(methodName);
-        handlers.forEach((handler) => handler(data));
+        for (let i = 0; i < handlers.length; ++i) {
+            handlers[i](data);
+        }
         return data;
     }
 }
