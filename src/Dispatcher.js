@@ -59,7 +59,7 @@ export class Dispatcher {
                     console.debug('start %o Dispatching actions %o...', this.count, [...actions].map((a) => a.type));
                 }
 
-                this._loadData();
+                this._preDispatch();
 
                 for (let i = 0; i < actions.length; ++i) {
                     const action = actions[i];
@@ -69,7 +69,7 @@ export class Dispatcher {
                     this._dispatchAction(action);
                 }
 
-                this._storeData();
+                this._postDispatch();
 
                 this._fireChanged();
 
@@ -78,8 +78,7 @@ export class Dispatcher {
                 }
 
                 resolve();
-            }
-            catch (err) {
+            } catch (err) {
                 reject(err);
             }
         });
@@ -129,26 +128,35 @@ export class Dispatcher {
     }
 
     _fireChanged() {
-        const data = this._collectData();
+        const data = this._collectData('appendDataTo');
         if (__DEV__) {
             console.debug('Updating view data=%o to %o listeners...', data, this.eventEmitter.listenerCount('changed'));
         }
         this.eventEmitter.emit('changed', {type: 'change', data});
     }
 
-    _loadData() {
-        const handlers = this._getHandlersHandling('loadData');
+    _preDispatch() {
+        const handlers = this._getHandlersHandling('preDispatch');
         handlers.forEach((handler) => handler());
     }
 
-    _storeData() {
-        const handlers = this._getHandlersHandling('storeData');
+    _postDispatch() {
+        const handlers = this._getHandlersHandling('postDispatch');
         handlers.forEach((handler) => handler());
     }
 
-    _collectData() {
+    save() {
+        return this._collectData("save");
+    }
+
+    load(data) {
+        const handlers = this._getHandlersHandling("load");
+        handlers.forEach((handler) => handler(data));
+    }
+
+    _collectData(methodName) {
         const data = {};
-        const handlers = this._getHandlersHandling('appendDataTo');
+        const handlers = this._getHandlersHandling(methodName);
         handlers.forEach((handler) => handler(data));
         return data;
     }
