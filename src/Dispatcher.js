@@ -17,6 +17,11 @@ export class Dispatcher {
         this.handlers = [];
         this.handlerCache = {};
         this.eventEmitter = new EventEmitter();
+        this.logger = console;
+    }
+
+    setLogger(logger) {
+        this.logger = logger;
     }
 
     addHandler(...handlers) {
@@ -56,7 +61,7 @@ export class Dispatcher {
         return new Promise((resolve, reject) => {
             try {
                 if (__DEV__) {
-                    console.debug('start %o Dispatching actions %o...', this.count, [...actions].map((a) => a.type));
+                    this.logger.debug('start %o Dispatching actions %o...', this.count, [...actions].map((a) => a.type));
                 }
 
                 this._preDispatch();
@@ -64,7 +69,7 @@ export class Dispatcher {
                 for (let i = 0; i < actions.length; ++i) {
                     const action = actions[i];
                     if (__DEV__) {
-                        console.debug('%o Dispatching action=%o (%o)...', this.count, action.type, action);
+                        this.logger.debug('%o Dispatching action=%o (%o)...', this.count, action.type, action);
                     }
                     this._dispatchAction(action);
                 }
@@ -74,7 +79,7 @@ export class Dispatcher {
                 this._fireChanged();
 
                 if (__DEV__) {
-                    console.debug('end %o', this.count++);
+                    this.logger.debug('end %o', this.count++);
                 }
 
                 resolve();
@@ -87,7 +92,7 @@ export class Dispatcher {
     _dispatchAction(action) {
         if (__DEV__) {
             if (!action['type']) {
-                console.error('Action without type: %o', action);
+                this.logger.error('Action without type: %o', action);
                 return;
             }
         }
@@ -95,7 +100,7 @@ export class Dispatcher {
         const handlerName = handlerNameFor(action.type);
         const handlers = this._getHandlersHandling(handlerName);
         if (__DEV__) {
-            console.debug('%o Dispatching action result=%o to %d handler(s)...', this.count, action, handlers.length);
+            this.logger.debug('%o Dispatching action result=%o to %d handler(s)...', this.count, action, handlers.length);
         }
         handlers.forEach((handler) => handler(action));
     }
@@ -130,7 +135,7 @@ export class Dispatcher {
     _fireChanged() {
         const data = this._collectData('appendDataTo');
         if (__DEV__) {
-            console.debug('Updating view data=%o to %o listeners...', data, this.eventEmitter.listenerCount('changed'));
+            this.logger.debug('Updating view data=%o to %o listeners...', data, this.eventEmitter.listenerCount('changed'));
         }
         this.eventEmitter.emit('changed', {type: 'change', data});
     }
