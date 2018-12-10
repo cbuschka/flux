@@ -118,9 +118,9 @@ export class Dispatcher {
 
     subscribe(l) {
         this.eventEmitter.addListener('changed', l);
-        this._loadData();
+        this._preDispatch();
         this._fireChanged();
-        this._storeData();
+        this._postDispatch();
     }
 
     unsubscribe(l) {
