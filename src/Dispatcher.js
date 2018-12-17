@@ -1,4 +1,4 @@
-import {EventEmitter} from './EventEmitter.js';
+import {EventEmitter} from 'events';
 
 function upperFirst(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
