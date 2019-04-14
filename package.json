@@ -36,6 +36,7 @@
     "@babel/runtime": "^7.0.0"
   },
   "dependencies": {
-    "events": "^3.0.0"
+    "events": "^3.0.0",
+    "setimmediate": "^1.0.5"
   }
 }

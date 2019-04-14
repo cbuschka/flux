@@ -1,4 +1,5 @@
 import {EventEmitter} from 'events';
+import setImmediate from 'setimmediate';
 
 function upperFirst(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
@@ -123,9 +124,11 @@ export class Dispatcher {
 
     subscribe(l) {
         this.eventEmitter.addListener('changed', l);
-        this._preDispatch();
-        this._fireChanged();
-        this._postDispatch();
+        setImmediate(() => {
+            this._preDispatch();
+            this._fireChanged();
+            this._postDispatch();
+        });
     }
 
     unsubscribe(l) {
@@ -142,14 +145,14 @@ export class Dispatcher {
 
     _preDispatch() {
         const handlers = this._getHandlersHandling('preDispatch');
-        for(let i=0; i<handlers.length; ++i) {
+        for (let i = 0; i < handlers.length; ++i) {
             handlers[i]();
         }
     }
 
     _postDispatch() {
         const handlers = this._getHandlersHandling('postDispatch');
-        for(let i=0; i<handlers.length; ++i) {
+        for (let i = 0; i < handlers.length; ++i) {
             handlers[i]();
         }
     }
