@@ -34,6 +34,7 @@ export class Dispatcher {
                 continue;
             }
             this.handlers.push(handler);
+            this._resetHandler(handler);
             handlerAdded = true;
         }
 
@@ -50,6 +51,7 @@ export class Dispatcher {
             if (handlerIndex !== -1) {
                 this.handlers.splice(handlerIndex, 1);
                 handlerRemoved = true;
+                this._resetHandler(handler);
             }
         }
 
@@ -175,6 +177,12 @@ export class Dispatcher {
             handlers[i](data);
         }
         return data;
+    }
+
+    _resetHandler(handler) {
+        if (typeof handler.reset === 'function') {
+            handler.reset();
+        }
     }
 }
 
