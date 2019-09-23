@@ -1,5 +1,4 @@
-import {EventEmitter} from 'events';
-import 'setimmediate';
+import {EventEmitter} from "./EventEmitter";
 
 function upperFirst(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
@@ -125,24 +124,22 @@ export class Dispatcher {
     }
 
     subscribe(l) {
-        this.eventEmitter.addListener('changed', l);
-        setImmediate(() => {
-            this._preDispatch();
-            this._fireChanged();
-            this._postDispatch();
-        });
+        this.eventEmitter.addListener(l);
+        this._preDispatch();
+        this._fireChanged();
+        this._postDispatch();
     }
 
     unsubscribe(l) {
-        this.eventEmitter.removeListener('changed', l);
+        this.eventEmitter.removeListener(l);
     }
 
     _fireChanged() {
         const data = this._collectData('appendDataTo');
         if (__DEV__) {
-            this.logger.debug('Updating view data=%o to %o listeners...', data, this.eventEmitter.listenerCount('changed'));
+            this.logger.debug('Updating view data=%o to %o listeners...', data, this.eventEmitter.listenerCount());
         }
-        this.eventEmitter.emit('changed', {type: 'change', data});
+        this.eventEmitter.emit({type: 'change', data});
     }
 
     _preDispatch() {
