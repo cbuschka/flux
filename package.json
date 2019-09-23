@@ -32,7 +32,8 @@
     "npm-run-all": "^4.1.1",
     "rimraf": "^2.6.2"
   },
-  "peerDependencies": {
-    "@babel/runtime": "^7.6.0"
+  "dependencies": {
+    "@babel/runtime": "^7.6.0",
+    "core-js": "3"
   }
 }

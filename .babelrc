@@ -10,7 +10,8 @@
             },
             "spec": true,
             "modules": "commonjs",
-            "useBuiltIns": "usage"
+            "useBuiltIns": "usage",
+            "corejs": 3
           }
         ]
       ],
