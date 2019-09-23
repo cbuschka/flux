@@ -62,7 +62,7 @@ export class Dispatcher {
     dispatch(...actions) {
         return new Promise((resolve, reject) => {
             try {
-                if (__DEV__) {
+                if (this.logger) {
                     this.logger.debug('start %o Dispatching actions %o...', this.count, [...actions].map((a) => a.type));
                 }
 
@@ -70,7 +70,7 @@ export class Dispatcher {
 
                 for (let i = 0; i < actions.length; ++i) {
                     const action = actions[i];
-                    if (__DEV__) {
+                    if (this.logger) {
                         this.logger.debug('%o Dispatching action=%o (%o)...', this.count, action.type, action);
                     }
                     this._dispatchAction(action);
@@ -80,7 +80,7 @@ export class Dispatcher {
 
                 this._fireChanged();
 
-                if (__DEV__) {
+                if (this.logger) {
                     this.logger.debug('end %o', this.count++);
                 }
 
@@ -92,7 +92,7 @@ export class Dispatcher {
     }
 
     _dispatchAction(action) {
-        if (__DEV__) {
+        if (this.logger) {
             if (!action['type']) {
                 this.logger.error('Action without type: %o', action);
                 return;
@@ -101,7 +101,7 @@ export class Dispatcher {
 
         const handlerName = handlerNameFor(action.type);
         const handlers = this._getHandlersHandling(handlerName);
-        if (__DEV__) {
+        if (this.logger) {
             this.logger.debug('%o Dispatching action result=%o to %d handler(s)...', this.count, action, handlers.length);
         }
         handlers.forEach((handler) => handler(action));
@@ -136,7 +136,7 @@ export class Dispatcher {
 
     _fireChanged() {
         const data = this._collectData('appendDataTo');
-        if (__DEV__) {
+        if (this.logger) {
             this.logger.debug('Updating view data=%o to %o listeners...', data, this.eventEmitter.listenerCount());
         }
         this.eventEmitter.emit({type: 'change', data});
