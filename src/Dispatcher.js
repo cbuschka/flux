@@ -64,8 +64,6 @@ export class Dispatcher {
                     this.logger.debug('start %o Dispatching actions %o...', this.count, [...actions].map((a) => a.type));
                 }
 
-                this._preDispatch();
-
                 for (let i = 0; i < actions.length; ++i) {
                     const action = actions[i];
                     if (this.logger) {
@@ -73,8 +71,6 @@ export class Dispatcher {
                     }
                     this._dispatchAction(action);
                 }
-
-                this._postDispatch();
 
                 this._fireChanged();
 
@@ -123,9 +119,7 @@ export class Dispatcher {
 
     subscribe(l) {
         this.eventEmitter.addListener(l);
-        this._preDispatch();
         this._fireChanged();
-        this._postDispatch();
     }
 
     unsubscribe(l) {
@@ -138,20 +132,6 @@ export class Dispatcher {
             this.logger.debug('Updating view data=%o to %o listeners...', data, this.eventEmitter.listenerCount());
         }
         this.eventEmitter.emit({type: 'change', data});
-    }
-
-    _preDispatch() {
-        const handlers = this._getHandlersHandling('preDispatch');
-        for (let i = 0; i < handlers.length; ++i) {
-            handlers[i]();
-        }
-    }
-
-    _postDispatch() {
-        const handlers = this._getHandlersHandling('postDispatch');
-        for (let i = 0; i < handlers.length; ++i) {
-            handlers[i]();
-        }
     }
 
     save() {
