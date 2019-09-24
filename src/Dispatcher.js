@@ -1,16 +1,17 @@
 import {EventEmitter} from "./EventEmitter";
 
-function upperFirst(s) {
+const upperFirst = (s) => {
     return s.charAt(0).toUpperCase() + s.slice(1);
-}
+};
 
-function handlerNameFor(eventType) {
+const handlerNameFor = (eventType) => {
     return 'on' + upperFirst(eventType);
-}
+};
 
-// a small dispatcher that delegates actions to handlers/stores;
-// for action Abc implement handleAbc(action) in handler/store class
-// after dispatching, the dispatcher aggregates view data via calls to appendDataTo(date)
+// A dispatcher that distributes actions to handlers/stores registered via addHandler():
+// for action {type: 'abc', ...] implement onAbc(action) in handler/store class.
+// After dispatch, the dispatcher aggregates view data via calls to appendDataTo(date)
+// and informs change listeners added via subscribe().
 export class Dispatcher {
     constructor() {
         this.count = 0;
@@ -85,6 +86,15 @@ export class Dispatcher {
         });
     }
 
+    subscribe(l) {
+        this.eventEmitter.addListener(l);
+        this._fireChanged();
+    }
+
+    unsubscribe(l) {
+        this.eventEmitter.removeListener(l);
+    }
+
     _dispatchAction(action) {
         if (this.logger) {
             if (!action['type']) {
@@ -115,15 +125,6 @@ export class Dispatcher {
         }
 
         return this.handlerCache[handlerName].handlers;
-    }
-
-    subscribe(l) {
-        this.eventEmitter.addListener(l);
-        this._fireChanged();
-    }
-
-    unsubscribe(l) {
-        this.eventEmitter.removeListener(l);
     }
 
     _fireChanged() {
