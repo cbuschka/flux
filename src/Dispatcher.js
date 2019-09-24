@@ -134,17 +134,6 @@ export class Dispatcher {
         this.eventEmitter.emit({type: 'change', data});
     }
 
-    save() {
-        return this._collectData("save");
-    }
-
-    load(data) {
-        const handlers = this._getHandlersHandling("load");
-        for (let i = 0; i < handlers.length; ++i) {
-            handlers[i](data);
-        }
-    }
-
     _collectData(methodName) {
         const data = {};
         const handlers = this._getHandlersHandling(methodName);
